@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cliente360.Integracion.Alignet", "Cliente360.Integracion.Alignet\Cliente360.Integracion.Alignet.csproj", "{39CD2F22-498D-4950-98EB-EF909D88AE45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cliente360.Integracion.Alignet.Console", "Cliente360.Integracion.Alignet.Console\Cliente360.Integracion.Alignet.Console.csproj", "{6B287FE0-241A-48CB-8FE4-AB01C3C18E16}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{39CD2F22-498D-4950-98EB-EF909D88AE45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39CD2F22-498D-4950-98EB-EF909D88AE45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39CD2F22-498D-4950-98EB-EF909D88AE45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39CD2F22-498D-4950-98EB-EF909D88AE45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B287FE0-241A-48CB-8FE4-AB01C3C18E16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B287FE0-241A-48CB-8FE4-AB01C3C18E16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B287FE0-241A-48CB-8FE4-AB01C3C18E16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B287FE0-241A-48CB-8FE4-AB01C3C18E16}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {22226BBD-874D-4EA6-A8DF-334CB95E272F}
+	EndGlobalSection
+EndGlobal
