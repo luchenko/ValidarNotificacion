@@ -26,7 +26,8 @@ namespace Cliente360.Integracion.Alignet
         private readonly string IDACQUIRER = ConfigurationManager.AppSettings["IDACQUIRER"];
         private readonly string IDCOMMERCE = ConfigurationManager.AppSettings["IDCOMMERCE"];
         //private string OPERATIONNUMBER = "62170007";
-        private readonly string AUTHORIZATION = ConfigurationManager.AppSettings["AUTHORIZATION"]; 
+        private readonly string AUTHORIZATION_CONSULTA = ConfigurationManager.AppSettings["AUTHORIZATION_CONSULTA"];
+        private readonly string AUTHORIZATION_EXTORNO = ConfigurationManager.AppSettings["AUTHORIZATION_EXTORNO"];
 
         private static readonly string CUSTOMERKEY = ConfigurationManager.AppSettings["CUSTOMERKEY"];
         private static readonly string IDCOMMERCEMAIL = ConfigurationManager.AppSettings["IDCOMMERCEMAIL"];
@@ -35,6 +36,12 @@ namespace Cliente360.Integracion.Alignet
         private static readonly string CODERROR_EXCEPCION =  ConfigurationManager.AppSettings["CODERROR_ALIGNET"]; //4
         private static readonly string CODERROR_ALIGNET =  ConfigurationManager.AppSettings["CODERROR_ALIGNET"]; //5
         private static readonly string CODEST_OKALIGNET =  ConfigurationManager.AppSettings["CODEST_OKALIGNET"]; //9
+
+        private static readonly string DIAS_PROCESO_EXTORNO = ConfigurationManager.AppSettings["DIAS_PROCESO_EXTORNO"]; //4
+
+        //private static readonly string VALIDAR_EXTORNO_REALIZADO = ConfigurationManager.AppSettings["VALIDAR_EXTORNO_REALIZADO"];  
+
+        //result
 
         public static HttpClient ApiClient { get; set; } 
 
@@ -48,45 +55,51 @@ namespace Cliente360.Integracion.Alignet
             ApiClient.DefaultRequestHeaders.Accept.Clear();
             string _result;
             JObject objreversa;
+            string[] estados = { CODEST_PENDIENTEEXTORNO, CODERROR_EXCEPCION, CODERROR_ALIGNET };
             try
             {
                 _logger.Info("Inicio del procesamiento API alignet...");
-                var transacciones_alignet = ObtenerTransaccionesAlignet(CODEST_PENDIENTEEXTORNO);
+                var transacciones_alignet = ObtenerTransaccionesAlignet(estados);
                 foreach (base_transacciones el in transacciones_alignet)
                 {
-                    Console.WriteLine(el.EMAIL);
-                    //ConsultarAlignet("62170007");
-                    _result = ReverseAlignet(el.NUMERO_PEDIDO);
+                    //Console.WriteLine(el.EMAIL);
+                    _result = ReverseAlignet(el.CODIGO_UNICO);
 
                     if (_result.Length > 0)
                     {
                         objreversa = JObject.Parse(_result);
                         objreversa.TryGetValue("success", out JToken value);
-                        Console.WriteLine(value.ToString());
+                        //Console.WriteLine(value.ToString());
                         if (value.ToString() == "true")
                         {
-                            ActualizarTransaccionesAlignet(el.NUMERO_PEDIDO, CODEST_OKALIGNET);
-                            StringContent xmlDoc = getXmlDoc(el.TITULAR, el.PAN, el.FECHA_PEDIDO, el.MONTO, el.ESTADO_OPERACION.ToString(), el.CODIGO_AUTORIZACION, el.BANCO, el.MARCA_TARJETA, el.EMAIL);
-                            SendMailByApi(APICREATEMAIL, xmlDoc);
+                            //Console.WriteLine(" el.NUMERO_PEDIDO :" + el.NUMERO_PEDIDO + " Extornado");
+                            ActualizarTransaccionesAlignet(el.ID, CODEST_OKALIGNET);
+                            //StringContent xmlDoc = getXmlDoc(el.TITULAR, el.PAN, el.FECHA_PEDIDO, el.MONTO, el.ESTADO_OPERACION.ToString(), el.CODIGO_AUTORIZACION, el.BANCO, el.MARCA_TARJETA, el.EMAIL);
+                            //SendMailByApi(APICREATEMAIL, xmlDoc);
+                            //"result":
+
+                            //    ConsultarAlignet(el.NUMERO_PEDIDO);
+
                         }
                         else
                         {
                             JToken objex = objreversa["Exception"];
                             if (objex != null)
                             {
-                                ActualizarTransaccionesAlignet(el.NUMERO_PEDIDO, CODERROR_EXCEPCION);
-                                //Console.WriteLine(objex.ToString());
+                                ActualizarTransaccionesAlignet(el.ID, CODERROR_EXCEPCION);
+                                //Console.WriteLine("ERROR el.NUMERO_PEDIDO :" + objex.ToString());
                             }
                             else
                             {
                                 objreversa.TryGetValue("message_ilgn", out JToken message);
-                                ActualizarTransaccionesAlignet(el.NUMERO_PEDIDO, CODERROR_ALIGNET);
+                                ActualizarTransaccionesAlignet(el.ID, CODERROR_ALIGNET);
+                                //Console.WriteLine("ERROR el.NUMERO_PEDIDO :" + message.ToString());
                                 //Console.WriteLine(message.ToString());
                             }
                         }
                     }
                     else {
-                        ActualizarTransaccionesAlignet(el.NUMERO_PEDIDO, CODERROR_ALIGNET);
+                        ActualizarTransaccionesAlignet(el.ID, CODERROR_ALIGNET);
                     }
 
                 }
@@ -99,19 +112,19 @@ namespace Cliente360.Integracion.Alignet
             }
         }
 
-        private List<base_transacciones> ObtenerTransaccionesAlignet(string estado)
+        private List<base_transacciones> ObtenerTransaccionesAlignet(string[] estado)
         {
             _logger.Info("Inicio de la carga de transacciones alignet...");
-            string sql = "Select * from base_transacciones_alignet where ESTADO_OPERACION = '"+ estado + "'"; //"dbo.getBaseAlignet @ESTADO_OPERACION = 3;"; 
+            string sql = "Select * from base_asl where ESTADO_OPERACION in ('" + String.Join("','", estado) + "') AND  convert(datetime, dateadd(d, -" + DIAS_PROCESO_EXTORNO + ", GETDATE()), 103) <= convert(datetime, FECHA_PEDIDO, 103) ";
             var transacciones = GetData(sql, CommandType.Text);
             _logger.Info(string.Format("Se obtuvieron {0} transacciones...", transacciones.Count));
             return transacciones;
         }
 
-        public void ActualizarTransaccionesAlignet(string operationNumber,string estado_operacion)
+        public void ActualizarTransaccionesAlignet(long id,string estado_operacion)
         {
             _logger.Info("Actualiza carga de transacciones alignet...");
-            string sql = "UPDATE base_transacciones_alignet SET ESTADO_OPERACION = '"+ estado_operacion + "', FECHA_OPERACION = GetDate() WHERE NUMERO_PEDIDO = '"+ operationNumber+"'";  
+            string sql = "UPDATE base_transacciones_alignet SET ESTADO_OPERACION = '"+ estado_operacion + "', FECHA_OPERACION = GetDate() WHERE ID = '"+ id.ToString() + "'";  
             UpdateData(sql, CommandType.Text);
         }
 
@@ -182,7 +195,7 @@ namespace Cliente360.Integracion.Alignet
 
         private void ConsultarAlignet(string operationNumber) 
         {
-            string TEXT = IDACQUIRER + IDCOMMERCE + operationNumber + AUTHORIZATION;
+            string TEXT = IDACQUIRER + IDCOMMERCE + operationNumber + AUTHORIZATION_CONSULTA;
             string PURCHASEVERIFICATION = SHA512(TEXT);
             string DATA = "{\"idAcquirer\":\"" + IDACQUIRER + "\",\"idCommerce\":\"" + IDCOMMERCE + "\",\"operationNumber\":\"" + operationNumber + "\",\"purchaseVerification\":\"" + PURCHASEVERIFICATION + "\"}";
             string responseData = "";
@@ -219,7 +232,7 @@ namespace Cliente360.Integracion.Alignet
                 System.Net.WebRequest wrequest = System.Net.WebRequest.Create(APIREVERSE+"/"+operationNumber);
                 wrequest.ContentType = "application/json";
                 //wrequest.Headers.Add("Authorization", AUTHORIZATION);
-                wrequest.Headers["Authorization"]= AUTHORIZATION;
+                wrequest.Headers["Authorization"]= AUTHORIZATION_EXTORNO;
                 wrequest.Method = "DELETE"; //DELETE
                 Console.WriteLine(APIREVERSE + "/" + operationNumber);
                
@@ -250,7 +263,7 @@ namespace Cliente360.Integracion.Alignet
                 var hashedInputStringBuilder = new System.Text.StringBuilder(128);
                 foreach (var b in hashedInputBytes)
                     hashedInputStringBuilder.Append(b.ToString("X2"));
-                return hashedInputStringBuilder.ToString();
+                return hashedInputStringBuilder.ToString().ToLower();
             }
         }
 
