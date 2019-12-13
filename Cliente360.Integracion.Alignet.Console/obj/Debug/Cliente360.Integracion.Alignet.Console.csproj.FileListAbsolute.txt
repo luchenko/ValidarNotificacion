@@ -55,5 +55,8 @@ C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-m
 C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-master\Cliente360.Integracion.Alignet.Console\obj\Debug\Cliente360.Integracion.Alignet.Console.csproj.CopyComplete
 C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-master\Cliente360.Integracion.Alignet.Console\obj\Debug\Cliente360.Integracion.Alignet.Console.exe
 C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-master\Cliente360.Integracion.Alignet.Console\obj\Debug\Cliente360.Integracion.Alignet.Console.pdb
+C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-master\Cliente360.Integracion.Alignet.Console\bin\Debug\Cliente360.Integracion.Notificacion.dll
+C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-master\Cliente360.Integracion.Alignet.Console\bin\Debug\Cliente360.Integracion.Notificacion.pdb
+C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-master\Cliente360.Integracion.Alignet.Console\bin\Debug\Cliente360.Integracion.Notificacion.dll.config
 C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-master\Cliente360.Integracion.Alignet.Console\bin\Debug\Newtonsoft.Json.dll
 C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-master\Cliente360.Integracion.Alignet.Console\bin\Debug\Newtonsoft.Json.xml

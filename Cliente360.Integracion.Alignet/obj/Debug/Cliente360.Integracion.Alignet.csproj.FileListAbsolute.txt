@@ -59,3 +59,6 @@ C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-m
 C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-master\Cliente360.Integracion.Alignet\bin\Debug\Newtonsoft.Json.xml
 C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-master\Cliente360.Integracion.Alignet\bin\Debug\System.Net.Http.Formatting.xml
 C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-master\Cliente360.Integracion.Alignet\obj\Debug\Cliente360.Integracion.Alignet.csprojAssemblyReference.cache
+C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-master\Cliente360.Integracion.Alignet\bin\Debug\Cliente360.Integracion.Notificacion.dll
+C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-master\Cliente360.Integracion.Alignet\bin\Debug\Cliente360.Integracion.Notificacion.pdb
+C:\Users\ext_lclyp\Documents\Proyectos\PeruCelula\sf_alignet-master\sf_alignet-master\Cliente360.Integracion.Alignet\bin\Debug\Cliente360.Integracion.Notificacion.dll.config
