@@ -25,5 +25,6 @@ namespace Cliente360.Integracion.Alignet.Entities
         public string BANCO { get; set; }
         public int ESTADO_OPERACION { get; set; }
         public DateTime FECHA_OPERACION { get; set; }
+        public int TIPO_TRANSACCION { get; set; }
     }
 }
