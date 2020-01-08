@@ -33,6 +33,7 @@ namespace Cliente360.Integracion.Alignet
 
         private static readonly string CUSTOMERKEY01 = ConfigurationManager.AppSettings["CUSTOMERKEY01"];
         private static readonly string CUSTOMERKEY02 = ConfigurationManager.AppSettings["CUSTOMERKEY02"];
+        private static readonly string CUSTOMERKEY03 = ConfigurationManager.AppSettings["CUSTOMERKEY03"];
         private static readonly string IDCOMMERCEMAIL = ConfigurationManager.AppSettings["IDCOMMERCEMAIL"];
         //System.Configuration.ConfigurationManager
 
@@ -41,12 +42,12 @@ namespace Cliente360.Integracion.Alignet
         //private static readonly string cadenaConexion = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
         private static readonly string cadenaConexion = ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
 
-        private static readonly string COD_RESULT_LIQUIDADO = ConfigurationManager.AppSettings["COD_RESULT_LIQUIDADO"];
+       // private static readonly string COD_RESULT_LIQUIDADO = ConfigurationManager.AppSettings["COD_RESULT_LIQUIDADO"];
         private static readonly string COD_RESULT_EXTORNADO = ConfigurationManager.AppSettings["COD_RESULT_EXTORNADO"];
 
-        private static readonly string CODEST_OKLIQUIDACION = ConfigurationManager.AppSettings["CODEST_OKLIQUIDACION"]; //
+        private static readonly string CODEST_OKVALIDACION = ConfigurationManager.AppSettings["CODEST_OKVALIDACION"]; //
         private static readonly string CODEST_OKEXTORNADO = ConfigurationManager.AppSettings["CODEST_OKEXTORNADO"];
-        private static readonly string CODERROR_LIQUIDACION = ConfigurationManager.AppSettings["CODERROR_LIQUIDACION"];
+        private static readonly string CODERROR_VALIDACION = ConfigurationManager.AppSettings["CODERROR_VALIDACION"];
         private static readonly string CODERROR_NOTIFICACION = ConfigurationManager.AppSettings["CODERROR_NOTIFICACION"];
         private static readonly string ESTADO_EXTORNADO = ConfigurationManager.AppSettings["ESTADO_EXTORNADO"];
         //private static readonly string VALIDAR_EXTORNO_REALIZADO = ConfigurationManager.AppSettings["VALIDAR_EXTORNO_REALIZADO"];  
@@ -61,13 +62,13 @@ namespace Cliente360.Integracion.Alignet
         {
 
             //Newtonsoft.Json.Linq.JObject objreversa;
-            string[] estados = { CODEST_OKEXTORNADO, CODERROR_LIQUIDACION };
+            string[] estados = { CODEST_OKEXTORNADO, CODERROR_VALIDACION };
             Newtonsoft.Json.Linq.JObject objNotificacion;
 
             try
             {
                 _logger.Info("Inicio del procesamiento #3 Validar-Notificacion");
-                var transacciones_alignet = ObtenerTransaccionesParaLiquidar(estados);
+                var transacciones_alignet = ObtenerTransaccionesParaValidar(estados);
 
                 foreach (base_transacciones el in transacciones_alignet)
                 {
@@ -76,19 +77,19 @@ namespace Cliente360.Integracion.Alignet
 
                     if (_estado == COD_RESULT_EXTORNADO)
                     {
-                        ActualizarTransaccionesAlignet(el.ID, CODEST_OKLIQUIDACION, ESTADO_EXTORNADO);
+                        ActualizarTransaccionesAlignet(el.ID, CODEST_OKVALIDACION, ESTADO_EXTORNADO);
                         var notificacionBase = new object {};
 
                         switch (el.TIPO_TRANSACCION)
                         {
                             case 1:
-                                notificacionBase = getNotificacionBase(el.ID.ToString(), el.NUMERO_ORDEN, el.NOMBRE_TITULAR, el.NUMERO_TARJETA, string.Format("{0:dd-MM-yyyy}", el.FECHA_PEDIDO), el.IMPORTE_PEDIDO, ESTADO_EXTORNADO, el.CODIGO_AUTORIZACION, el.BANCO, el.MEDIO_PAGO, el.EMAIL,CUSTOMERKEY01);
+                                notificacionBase = getNotificacionBase(el.ID.ToString(), el.NUMERO_PEDIDO, el.NOMBRE_TITULAR, el.NUMERO_TARJETA, string.Format("{0:dd-MM-yyyy}", el.FECHA_PEDIDO), el.IMPORTE_PEDIDO, ESTADO_EXTORNADO, el.CODIGO_AUTORIZACION, el.BANCO, el.MEDIO_PAGO, el.EMAIL,CUSTOMERKEY01);
                                 break;
                             case 2:
-                                notificacionBase = getNotificacionBase(el.ID.ToString(), el.NUMERO_ORDEN, el.NOMBRE_TITULAR, el.NUMERO_TARJETA, string.Format("{0:dd-MM-yyyy}", el.FECHA_PEDIDO), el.IMPORTE_PEDIDO, ESTADO_EXTORNADO, el.CODIGO_AUTORIZACION, el.BANCO, el.MEDIO_PAGO, el.EMAIL,CUSTOMERKEY01);
+                                notificacionBase = getNotificacionBase(el.ID.ToString(), el.NUMERO_PEDIDO, el.NOMBRE_TITULAR, el.NUMERO_TARJETA, string.Format("{0:dd-MM-yyyy}", el.FECHA_PEDIDO), el.IMPORTE_PEDIDO, ESTADO_EXTORNADO, el.CODIGO_AUTORIZACION, el.BANCO, el.MEDIO_PAGO, el.EMAIL,CUSTOMERKEY02);
                                 break;
                             default:
-                                notificacionBase = getNotificacionBase(el.ID.ToString(), el.NUMERO_ORDEN, el.NOMBRE_TITULAR, el.NUMERO_TARJETA, string.Format("{0:dd-MM-yyyy}", el.FECHA_PEDIDO), el.IMPORTE_PEDIDO, ESTADO_EXTORNADO, el.CODIGO_AUTORIZACION, el.BANCO, el.MEDIO_PAGO, el.EMAIL,CUSTOMERKEY01);
+                                notificacionBase = getNotificacionBase(el.ID.ToString(), el.NUMERO_PEDIDO, el.NOMBRE_TITULAR, el.NUMERO_TARJETA, string.Format("{0:dd-MM-yyyy}", el.FECHA_PEDIDO), el.IMPORTE_PEDIDO, ESTADO_EXTORNADO, el.CODIGO_AUTORIZACION, el.BANCO, el.MEDIO_PAGO, el.EMAIL,CUSTOMERKEY03);
                                 break;
                         }
 
@@ -100,18 +101,18 @@ namespace Cliente360.Integracion.Alignet
                         if (result.ToString().Trim() != "True")
                         {
                             ActualizarTransaccionesAlignet(el.ID, CODERROR_NOTIFICACION, el.ESTADO_TRANSACCION);
-                            Console.WriteLine("Error Notificacion : " + el.NUMERO_PEDIDO);
+                            //Console.WriteLine("Error Notificacion : " + el.NUMERO_PEDIDO);
                         }  else Console.WriteLine("OK Notificacion : " + el.NUMERO_PEDIDO);
 
                     }
                     else
                     {
-                        ActualizarTransaccionesAlignet(el.ID, CODERROR_LIQUIDACION, el.ESTADO_TRANSACCION);
-                        Console.WriteLine("Error Notificacion : " + el.NUMERO_PEDIDO);
+                        ActualizarTransaccionesAlignet(el.ID, CODERROR_VALIDACION, el.ESTADO_TRANSACCION);
+                       // Console.WriteLine("Error Notificacion : " + el.NUMERO_PEDIDO);
                     }
                 }
 
-                _logger.Info("Fin del procesamiento Liquidado");
+                _logger.Info("Fin del procesamiento Validacion-Notificacion");
             }
             catch (Exception ex)
             {
@@ -119,7 +120,7 @@ namespace Cliente360.Integracion.Alignet
             }
         }
 
-        private List<base_transacciones> ObtenerTransaccionesParaLiquidar(string[] estado)
+        private List<base_transacciones> ObtenerTransaccionesParaValidar(string[] estado)
         {
             _logger.Info("Inicio de la carga de transacciones alignet...");
             string sql = "Select * from base_transacciones_alignet where ESTADO_OPERACION in ('" + String.Join("','", estado) + "') AND  convert(datetime, dateadd(d, -" + DIAS_PROCESO_EXTORNO + ", GETDATE()), 103) <= convert(datetime, FECHA_PEDIDO, 103) ";
